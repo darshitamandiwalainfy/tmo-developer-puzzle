@@ -15,6 +15,7 @@ import {
 } from './price-query.actions';
 import { PriceQueryPartialState } from './price-query.reducer';
 import { PriceQueryResponse } from './price-query.type';
+import { CommonConstants } from '../../../../../shared/util/src/common.constants';
 
 @Injectable()
 export class PriceQueryEffects {
@@ -24,9 +25,10 @@ export class PriceQueryEffects {
       run: (action: FetchPriceQuery, state: PriceQueryPartialState) => {
         return this.httpClient
           .get(
-            `${this.env.apiURL}/beta/stock/${action.symbol}/chart/${
-              action.period
-            }?token=${this.env.apiKey}`
+            `${CommonConstants.API_HOST}/${
+              CommonConstants.API_ROUTES.STOCK_CHART_DATA
+            }`,
+            { params: { symbol: action.symbol, period: action.period } }
           )
           .pipe(
             map(resp => new PriceQueryFetched(resp as PriceQueryResponse[]))
